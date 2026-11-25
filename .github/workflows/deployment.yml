@@ -1,0 +1,22 @@
+name: deploy imc backend
+on: [push]
+jobs:
+  create-folder:
+    name: create folder
+    runs-on: ubuntu-latest
+    steps:
+      - name: execute commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PRIVATE_KEY}}
+          port: 22
+          script:
+            mkdir -p /opt/application/imc/imc-ms
+            ls -al /opt/application/imc
+
+
+
+
+
