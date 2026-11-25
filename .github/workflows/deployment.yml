@@ -1,4 +1,3 @@
-
 name: deploy imc backend
 
 on: [push]
@@ -9,6 +8,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Verify SSH private key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        run: |
+          if [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "::error::PRIVATE_KEY est vide ou inaccessible"
+            exit 1
+          fi
+          echo "SSH private key detected"
+
       - name: Execute commands
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -17,5 +26,6 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            mkdir -p /opt/application/imc/imc-ms
-            ls -al /opt/application/imc
+            sudo mkdir -p /opt/application/imc/imc-ms
+            sudo chown -R $USER:$USER /opt/application/imc
+            ls -la /opt/application/imc
